@@ -9,7 +9,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
 
-  // Update baseURL to Render
   const api = axios.create({
     baseURL: process.env.REACT_APP_API_URL || 'https://funfling.onrender.com/api'
   });
@@ -17,6 +16,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
+    localStorage.setItem('token', res.data.token);
+    setToken(res.data.token);
+    setUser(res.data.user);
+    api.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+  };
+
+  const adminLogin = async (email, password) => {
+    const res = await api.post('/auth/admin-login', { email, password });
     localStorage.setItem('token', res.data.token);
     setToken(res.data.token);
     setUser(res.data.user);
@@ -39,8 +46,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, signup, logout, api }}>
+    <AuthContext.Provider value={{ user, token, login, adminLogin, signup, logout, api }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+export default AuthProvider;

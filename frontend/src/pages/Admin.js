@@ -4,37 +4,47 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/Admin.css';
 
 function Admin() {
-  const { user, api } = useAuth();
+  const { user, api, adminLogin } = useAuth();
   const [users, setUsers] = useState([]);
   const [profiles, setProfiles] = useState([]);
   const [error, setError] = useState('');
+  const [adminEmail, setAdminEmail] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user?.role !== 'admin') {
-      navigate('/login');
-      return;
+    if (user?.role === 'admin') {
+      const fetchData = async () => {
+        try {
+          const [usersRes, profilesRes] = await Promise.all([
+            api.get('/auth/users'),
+            api.get('/profiles')
+          ]);
+          setUsers(usersRes.data);
+          setProfiles(profilesRes.data);
+        } catch (err) {
+          setError('Failed to load data.');
+        }
+      };
+      fetchData();
     }
-    const fetchData = async () => {
-      try {
-        const [usersRes, profilesRes] = await Promise.all([
-          api.get('/auth/users'),  // Assume backend GET /api/auth/users (add route)
-          api.get('/profiles')
-        ]);
-        setUsers(usersRes.data);
-        setProfiles(profilesRes.data);
-      } catch (err) {
-        setError('Failed to load data.');
-      }
-    };
-    fetchData();
-  }, [user, api, navigate]);
+  }, [user, api]);
+
+  const handleAdminLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      await adminLogin(adminEmail, adminPassword);
+      // No navigation needed; useEffect will trigger data fetch on user change
+    } catch (err) {
+      setError('Invalid admin credentials.');
+    }
+  };
 
   const handleDelete = async (id, type) => {
     if (!window.confirm('Delete?')) return;
     try {
       await api.delete(type === 'user' ? `/auth/users/${id}` : `/profiles/${id}`);
-      // Refresh data
       setUsers(users.filter(u => u._id !== id));
       setProfiles(profiles.filter(p => p._id !== id));
     } catch (err) {
@@ -42,7 +52,34 @@ function Admin() {
     }
   };
 
-  if (!user) return <div>Loading...</div>;
+  if (user?.role !== 'admin') {
+    return (
+      <div className="admin-container">
+        <h2>Admin Login</h2>
+        {error && <p className="error">{error}</p>}
+        <form onSubmit={handleAdminLogin} className="admin-login-form">
+          <input
+            type="email"
+            value={adminEmail}
+            onChange={(e) => setAdminEmail(e.target.value)}
+            placeholder="Admin Email"
+            required
+            className="input-field"
+          />
+          <input
+            type="password"
+            value={adminPassword}
+            onChange={(e) => setAdminPassword(e.target.value)}
+            placeholder="Admin Password"
+            required
+            className="input-field"
+          />
+          <button type="submit" className="submit-btn">Login as Admin</button>
+        </form>
+        <button onClick={() => navigate('/')} className="back-btn">Back to Home</button>
+      </div>
+    );
+  }
 
   return (
     <div className="admin-container">
@@ -80,7 +117,7 @@ function Admin() {
           </tbody>
         </table>
       </section>
-      <button onClick={() => navigate('/dashboard')} className="back-btn">Back</button>
+      <button onClick={() => navigate('/')} className="back-btn">Back to Home</button>
     </div>
   );
 }

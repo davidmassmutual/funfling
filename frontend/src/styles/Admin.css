@@ -25,6 +25,45 @@
   margin-bottom: 15px;
 }
 
+.admin-login-form {
+  max-width: 400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #ff69b4;
+  box-shadow: 0 0 5px rgba(255, 105, 180, 0.3);
+}
+
+.submit-btn {
+  padding: 12px;
+  background: #ff69b4;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submit-btn:hover {
+  background: #e91e63;
+}
+
 .admin-table {
   width: 100%;
   border-collapse: collapse;
@@ -85,6 +124,10 @@
   .admin-table th, .admin-table td {
     padding: 8px;
     font-size: 0.9rem;
+  }
+
+  .admin-login-form {
+    max-width: 100%;
   }
 }
 

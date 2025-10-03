@@ -4,13 +4,13 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
-import Admin from './pages/Admin';  // Only for admins
+import Admin from './pages/Admin';
 import Chats from './pages/Chats';
 import About from './pages/About';
 import Dashboard from './pages/Dashboard';
 import Payment from './pages/Payment';
 import Contact from './pages/Contact';
-import Navbar from './components/Navbar';  // Optional nav bar
+import Navbar from './components/Navbar';
 import './styles/App.css';
 
 function AppContent() {
@@ -23,7 +23,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/profile" element={user ? <Profile /> : <Login />} />
-        <Route path="/admin" element={user?.role === 'admin' ? <Admin /> : <Login />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="/chats" element={user ? <Chats /> : <Login />} />
         <Route path="/about" element={<About />} />
         <Route path="/payment" element={user ? <Payment /> : <Login />} />

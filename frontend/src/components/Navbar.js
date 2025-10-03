@@ -16,7 +16,7 @@ function Navbar() {
     <nav className="navbar">
       <Link to="/" className="nav-brand">FunFling</Link>
       <ul className="nav-links">
-        <li><Link to="/dashboard">Dashboard</Link></li>
+        <li><Link to="/">Dashboard</Link></li>
         <li><Link to="/about">About</Link></li>
         <li><Link to="/contact">Contact</Link></li>
         {user ? (

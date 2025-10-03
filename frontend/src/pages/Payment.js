@@ -70,7 +70,7 @@ function Payment() {
       <Elements stripe={stripePromise}>
         <PaymentForm onSuccess={handleSuccess} />
       </Elements>
-      <button onClick={() => navigate('/dashboard')} className="back-btn">Cancel</button>
+      <button onClick={() => navigate('/')} className="back-btn">Cancel</button>
     </div>
   );
 }

@@ -24,7 +24,7 @@ function Contact() {
       <p>Have questions? Chat with our admin team directly!</p>
       <p>The chat widget will appear below. We're here to help with FunFling.</p>
       <div id="smartsupp-widget-container"></div>  {/* Widget auto-renders */}
-      <button onClick={() => navigate('/dashboard')} className="back-btn">Back to Dashboard</button>
+      <button onClick={() => navigate('/')} className="back-btn">Back to Dashboard</button>
     </div>
   );
 }

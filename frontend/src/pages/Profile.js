@@ -105,7 +105,7 @@ function Profile() {
         />
         <button type="submit" className="submit-btn">Update Profile</button>
       </form>
-      <button onClick={() => navigate('/dashboard')} className="back-btn">Back to Dashboard</button>
+      <button onClick={() => navigate('/')} className="back-btn">Back to Dashboard</button>
     </div>
   );
 }

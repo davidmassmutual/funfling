@@ -14,7 +14,7 @@ function About() {
         <li>Real-time chats</li>
         <li>Verified profiles</li>
       </ul>
-      <button onClick={() => navigate('/dashboard')} className="back-btn">Explore Now</button>
+      <button onClick={() => navigate('/')} className="back-btn">Explore Now</button>
     </div>
   );
 }

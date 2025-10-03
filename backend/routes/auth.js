@@ -4,14 +4,14 @@ const User = require('../models/User');
 const { auth, adminAuth } = require('../middleware/auth');
 const router = express.Router();
 
-// Signup
+// Signup (no admin role option)
 router.post('/signup', async (req, res) => {
   try {
     const { username, email, password } = req.body;
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ msg: 'User already exists' });
 
-    user = new User({ username, email, password });
+    user = new User({ username, email, password }); // role defaults to 'user'
     await user.save();
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -21,13 +21,29 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// Login
+// Regular Login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user || !(await user.comparePassword(password))) {
       return res.status(400).json({ msg: 'Invalid credentials' });
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token, user: { id: user._id, username: user.username, role: user.role } });
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error' });
+  }
+});
+
+// Admin Login
+router.post('/admin-login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user || user.role !== 'admin' || !(await user.comparePassword(password))) {
+      return res.status(400).json({ msg: 'Invalid admin credentials' });
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
