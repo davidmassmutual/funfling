@@ -24,13 +24,18 @@ function Chats() {
       setError('Select a user to chat.');
       return;
     }
-    const newSocket = io('http://localhost:5000');  // Update to Render URL
+    // Update Socket.io URL to Render
+    const newSocket = io(process.env.REACT_APP_SOCKET_URL || 'https://funfling.onrender.com');
     setSocket(newSocket);
 
     newSocket.emit('joinRoom', roomId);
 
     newSocket.on('receiveMessage', (data) => {
       setMessages(prev => [...prev, data]);
+    });
+
+    newSocket.on('loadMessages', (loadedMessages) => {
+      setMessages(loadedMessages);
     });
 
     return () => newSocket.close();
@@ -70,7 +75,9 @@ function Chats() {
           className="message-input"
           disabled={!socket}
         />
-        <button type="submit" className="send-btn" disabled={!socket || !message.trim()}>Send</button>
+        <button type="submit" className="send-btn" disabled={!socket || !message.trim()}>
+          Send
+        </button>
       </form>
     </div>
   );

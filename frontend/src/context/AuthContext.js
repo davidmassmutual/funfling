@@ -9,8 +9,10 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
 
-  // API base URL
-  const api = axios.create({ baseURL: 'http://localhost:5000/api' });  // Change to Render URL later
+  // Update baseURL to Render
+  const api = axios.create({
+    baseURL: process.env.REACT_APP_API_URL || 'https://funfling.onrender.com/api'
+  });
   if (token) api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
   const login = async (email, password) => {
