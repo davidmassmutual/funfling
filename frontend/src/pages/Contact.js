@@ -9,8 +9,7 @@ function Contact() {
     <div className="contact-container">
       <h2>Contact Us</h2>
       <p>Have questions? Chat with our admin team directly!</p>
-      <p>The chat widget will appear below. We're here to help with FunFling.</p>
-      <div id="smartsupp-widget-container"></div>
+      <p>The chat widget will appear in the bottom-right corner.</p>
       <button onClick={() => navigate('/')} className="back-btn">Back to Home</button>
     </div>
   );
