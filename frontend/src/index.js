@@ -1,21 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import './styles/index.css';
 import { AuthProvider } from './context/AuthContext';
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"></link>
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+// Load Smartsupp script
+if (!window.smartsupp) {
+  var _smartsupp = window._smartsupp || {};
+  _smartsupp.key = '57e6b64be0a10b49d1313a32c39f8ebb7fbafb15';
+  window.smartsupp = window.smartsupp || function () {
+    window.smartsupp._.push(arguments);
+  };
+  window.smartsupp._ = [];
+  var s = document.getElementsByTagName('script')[0];
+  var c = document.createElement('script');
+  c.type = 'text/javascript';
+  c.charset = 'utf-8';
+  c.async = true;
+  c.src = 'https://www.smartsuppchat.com/loader.js?';
+  s.parentNode.insertBefore(c, s);
+}
+
 root.render(
   <React.StrictMode>
     <AuthProvider>
-    <App />
+      <App />
     </AuthProvider>
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
