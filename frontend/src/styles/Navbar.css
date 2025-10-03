@@ -1,19 +1,21 @@
 .navbar {
-  background: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 15px 30px;
+  background: linear-gradient(90deg, #ff69b4, #e91e63);
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
 }
 
 .nav-brand {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #ff69b4;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
 }
 
 .nav-links {
@@ -22,47 +24,74 @@
   gap: 20px;
 }
 
-.nav-links li a, .logout-btn {
-  font-size: 1rem;
-  color: #333;
-  padding: 8px 12px;
-  transition: color 0.3s, background 0.3s;
+.nav-links li {
+  font-size: 1.1rem;
 }
 
-.nav-links li a:hover, .logout-btn:hover {
-  color: #ff69b4;
-  background: #f9f9f9;
-  border-radius: 6px;
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s, transform 0.2s;
+}
+
+.nav-links a:hover {
+  color: #ffd700;
+  transform: scale(1.05);
 }
 
 .logout-btn {
-  border: none;
   background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
   cursor: pointer;
-  font-weight: 600;
+  transition: color 0.3s, transform 0.2s;
 }
 
-/* Responsive */
+.logout-btn:hover {
+  color: #ffd700;
+  transform: scale(1.05);
+}
+
+.hamburger {
+  display: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+/* Mobile Styles */
 @media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    gap: 10px;
+  .hamburger {
+    display: block;
   }
 
   .nav-links {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: #ff69b4;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .nav-links.mobile-open {
+    display: flex;
+  }
+
+  .nav-links li {
+    margin: 10px 0;
   }
 }
 
 @media (max-width: 480px) {
-  .nav-brand {
-    font-size: 1.2rem;
+  .navbar {
+    padding: 10px 20px;
   }
 
-  .nav-links li a, .logout-btn {
-    font-size: 0.9rem;
-    padding: 6px 10px;
+  .nav-brand {
+    font-size: 1.5rem;
   }
 }

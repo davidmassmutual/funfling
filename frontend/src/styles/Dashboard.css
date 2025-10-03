@@ -2,23 +2,19 @@
   max-width: 1200px;
   margin: 40px auto;
   padding: 20px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-container h2 {
-  font-size: 1.8rem;
+  font-size: 2rem;
   color: #ff69b4;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .error {
   color: #e91e63;
-  font-size: 0.9rem;
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .profiles-grid {
@@ -28,16 +24,16 @@
 }
 
 .profile-card {
-  background: #f9f9f9;
+  background: #fff;
   border-radius: 12px;
-  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
   text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 0.2s;
 }
 
 .profile-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
 }
 
 .profile-img {
@@ -45,11 +41,11 @@
   height: 200px;
   object-fit: cover;
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .profile-card h3 {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: #333;
   margin-bottom: 10px;
 }
@@ -62,16 +58,16 @@
 
 .location {
   font-size: 0.9rem;
-  color: #ff69b4;
+  color: #333;
   margin-bottom: 10px;
 }
 
 .interests {
   display: flex;
   flex-wrap: wrap;
+  gap: 8px;
   justify-content: center;
-  gap: 5px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .interest-tag {
@@ -83,14 +79,12 @@
 }
 
 .chat-btn {
-  width: 100%;
-  padding: 10px;
+  padding: 10px 20px;
   background: #ff69b4;
   border: none;
   border-radius: 8px;
   color: #fff;
   font-size: 1rem;
-  font-weight: 600;
   cursor: pointer;
   transition: background 0.3s;
 }
@@ -106,21 +100,21 @@
     padding: 15px;
   }
 
-  .profiles-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  .dashboard-container h2 {
+    font-size: 1.8rem;
+  }
+
+  .profile-card {
+    padding: 15px;
   }
 }
 
 @media (max-width: 480px) {
-  .dashboard-container {
-    margin: 10px;
-  }
-
-  .profile-card {
-    padding: 10px;
-  }
-
   .profile-img {
     height: 150px;
+  }
+
+  .profile-card h3 {
+    font-size: 1.3rem;
   }
 }

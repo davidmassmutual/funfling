@@ -1,0 +1,182 @@
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 60px 20px;
+  background: linear-gradient(rgba(255, 105, 180, 0.1), rgba(255, 255, 255, 0.5)), url('https://via.placeholder.com/1200x400?text=Hero+Image');
+  background-size: cover;
+  border-radius: 12px;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  color: #ff69b4;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.hero-cta {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.cta-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.cta-btn.primary {
+  background: #ff69b4;
+  color: #fff;
+}
+
+.cta-btn.primary:hover {
+  background: #e91e63;
+  transform: scale(1.05);
+}
+
+.cta-btn.secondary {
+  background: #555;
+  color: #fff;
+}
+
+.cta-btn.secondary:hover {
+  background: #333;
+  transform: scale(1.05);
+}
+
+/* Features Section */
+.features {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.features h2 {
+  font-size: 2rem;
+  color: #ff69b4;
+  margin-bottom: 30px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.feature {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.feature h3 {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.feature p {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Reviews Section */
+.reviews {
+  padding: 40px 20px;
+  background: #f9f9f9;
+  text-align: center;
+}
+
+.reviews h2 {
+  font-size: 2rem;
+  color: #ff69b4;
+  margin-bottom: 30px;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.review {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.review p {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.review span {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* CTA Footer */
+.cta-footer {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.cta-footer h2 {
+  font-size: 2rem;
+  color: #ff69b4;
+  margin-bottom: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .hero-cta {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .features h2,
+  .reviews h2,
+  .cta-footer h2 {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-container {
+    padding: 10px;
+  }
+
+  .hero {
+    padding: 40px 10px;
+  }
+
+  .features,
+  .reviews,
+  .cta-footer {
+    padding: 20px 10px;
+  }
+}

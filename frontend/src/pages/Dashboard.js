@@ -12,7 +12,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
-        const res = await api.get('/profiles');
+        const res = await api.get('/profiles/ladies');
         setProfiles(res.data);
       } catch (err) {
         setError('Failed to load profiles.');
@@ -21,25 +21,36 @@ function Dashboard() {
     if (user) fetchProfiles();
   }, [user, api]);
 
-  if (!user) return <div>Please log in to view dashboard.</div>;
+  if (!user) {
+    navigate('/login');
+    return null;
+  }
 
   return (
     <div className="dashboard-container">
-      <h2>Welcome to FunFling, {user.username}!</h2>
+      <h2>Welcome to FunFling, {user.username}! 👩</h2>
       {error && <p className="error">{error}</p>}
       <div className="profiles-grid">
         {profiles.map(profile => (
           <div key={profile._id} className="profile-card">
-            <img src={profile.images[0] || 'https://via.placeholder.com/200?text=Profile'} alt={profile.name} className="profile-img" />
+            <img
+              src={profile.images[0] || 'https://via.placeholder.com/200?text=Profile'}
+              alt={profile.name}
+              className="profile-img"
+            />
             <h3>{profile.name}, {profile.age}</h3>
             <p className="bio">{profile.bio.substring(0, 100)}...</p>
             <p className="location">📍 {profile.location}</p>
-            <div className="interests">{profile.interests.map(i => <span key={i} className="interest-tag">{i}</span>)}</div>
-            <button 
-              onClick={() => navigate(`/chats?user=${profile.user._id}`)} 
+            <div className="interests">
+              {profile.interests.map(i => (
+                <span key={i} className="interest-tag">{i}</span>
+              ))}
+            </div>
+            <button
+              onClick={() => navigate(`/chats?user=${profile.userId}`)}
               className="chat-btn"
             >
-              Start Chat
+              💬 Chat with {profile.name}
             </button>
           </div>
         ))}
