@@ -11,13 +11,13 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: process.env.NODE_ENV === 'production' ? 'https://your-vercel-frontend.vercel.app' : '*',
+    origin: process.env.NODE_ENV === 'production' ? 'https://funfling.vercel.app' : 'http://localhost:3000',
     methods: ['GET', 'POST']
   }
 });
 
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? 'https://your-vercel-frontend.vercel.app' : 'http://localhost:3000'
+  origin: process.env.NODE_ENV === 'production' ? 'https://funfling.vercel.app' : 'http://localhost:3000'
 }));
 app.use(express.json());
 
@@ -33,7 +33,7 @@ app.use('/api/chats', require('./routes/chats'));
 app.use('/api/payments', require('./routes/payments'));
 
 // Socket.io for real-time chats
-const Message = require('./models/Message');  // For broadcasting saved messages
+const Message = require('./models/Message');
 
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
@@ -41,12 +41,11 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', async (roomId) => {
     socket.join(roomId);
     console.log(`User ${socket.id} joined room ${roomId}`);
-    // Load recent messages for room
     const recentMessages = await Message.find({ roomId }).sort({ createdAt: -1 }).limit(50);
-    socket.emit('loadMessages', recentMessages.reverse());  // Send oldest first
+    socket.emit('loadMessages', recentMessages.reverse());
   });
 
-  socket.on('sendMessage', async (data) => {  // data: { roomId, message, sender }
+  socket.on('sendMessage', async (data) => {
     const newMessage = new Message({ ...data, createdAt: new Date() });
     await newMessage.save();
     io.to(data.roomId).emit('receiveMessage', newMessage);
