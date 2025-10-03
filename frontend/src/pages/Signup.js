@@ -16,7 +16,7 @@ function Signup() {
     setError('');
     try {
       await signup(username, email, password);
-      navigate('/dashboard');
+      navigate('/');
     } catch (err) {
       setError('Signup failed. User may already exist.');
     }
