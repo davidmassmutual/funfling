@@ -43,6 +43,7 @@ function Admin() {
     e.preventDefault();
     try {
       await adminLogin(adminEmail, adminPassword);
+      console.log('Admin login successful, token:', localStorage.getItem('token'));
     } catch (err) {
       setError('Invalid admin credentials: ' + err.message);
     }
@@ -51,6 +52,8 @@ function Admin() {
   const handleAddLadyProfile = async (e) => {
     e.preventDefault();
     try {
+      const token = localStorage.getItem('token');
+      console.log('Sending profile creation request with token:', token);
       const profileData = {
         ...newLadyProfile,
         age: parseInt(newLadyProfile.age) || 0,
@@ -58,6 +61,7 @@ function Admin() {
         interests: newLadyProfile.interests ? newLadyProfile.interests.split(',').map(i => i.trim()) : []
       };
       const res = await api.post('/lady-profiles', profileData);
+      console.log('Profile creation response:', res.data);
       setLadyProfiles([...ladyProfiles, res.data]);
       setNewLadyProfile({ name: '', age: '', location: '', bio: '', images: '', interests: '', userId: '' });
       setError('');
