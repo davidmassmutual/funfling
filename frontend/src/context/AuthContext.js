@@ -1,72 +1,55 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { createContext, useState, useContext } from 'react';
 import axios from 'axios';
 
-export const AuthContext = createContext();
+const AuthContext = createContext();
+
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const navigate = useNavigate();
+  const [token, setToken] = useState(localStorage.getItem('token'));
 
   const api = axios.create({
-    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    baseURL: process.env.REACT_APP_API_URL || 'https://funfling.onrender.com/api'
   });
-
-  api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  });
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      api.get('/auth/me')
-        .then(res => setUser(res.data))
-        .catch(() => {
-          localStorage.removeItem('token');
-          setUser(null);
-        });
-    }
-  }, []);
+  if (token) api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
     localStorage.setItem('token', res.data.token);
+    setToken(res.data.token);
     setUser(res.data.user);
-    navigate('/dashboard');
+    api.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
   };
 
   const adminLogin = async (email, password) => {
     const res = await api.post('/auth/admin-login', { email, password });
     localStorage.setItem('token', res.data.token);
+    setToken(res.data.token);
     setUser(res.data.user);
-    navigate('/admin');
+    api.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
   };
 
   const signup = async (username, email, password) => {
     const res = await api.post('/auth/signup', { username, email, password });
     localStorage.setItem('token', res.data.token);
+    setToken(res.data.token);
     setUser(res.data.user);
-    navigate('/dashboard');
+    api.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
   };
 
   const logout = () => {
     localStorage.removeItem('token');
+    setToken(null);
     setUser(null);
-    navigate('/login');
+    delete api.defaults.headers.common['Authorization'];
   };
 
   return (
-    <AuthContext.Provider value={{ user, api, login, adminLogin, signup, logout }}>
+    <AuthContext.Provider value={{ user, token, login, adminLogin, signup, logout, api }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => React.useContext(AuthContext);
+export default AuthProvider;
