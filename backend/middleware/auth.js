@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 
 const auth = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -10,24 +9,15 @@ const auth = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(401).json({ msg: 'Token is not valid' });
+    res.status(401).json({ msg: 'Token is invalid' });
   }
 };
 
-// Admin-only middleware
 const adminAuth = (req, res, next) => {
-  auth(req, res, async () => {
-    try {
-      const user = await User.findById(req.user.id).select('-password');
-      if (!user || user.role !== 'admin') {
-        return res.status(403).json({ msg: 'Admin access denied' });
-      }
-      req.user = user;
-      next();
-    } catch (err) {
-      res.status(500).json({ msg: 'Server error' });
-    }
-  });
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ msg: 'Admin access required' });
+  }
+  next();
 };
 
 module.exports = { auth, adminAuth };

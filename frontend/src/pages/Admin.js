@@ -5,8 +5,8 @@ import '../styles/Admin.css';
 
 function Admin() {
   const { user, api, adminLogin } = useAuth();
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
-  const [profiles, setProfiles] = useState([]);
   const [ladyProfiles, setLadyProfiles] = useState([]);
   const [error, setError] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
@@ -16,26 +16,23 @@ function Admin() {
     age: '',
     location: '',
     bio: '',
-    images: [],
-    interests: [],
+    images: '',
+    interests: '',
     userId: ''
   });
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (user?.role === 'admin') {
       const fetchData = async () => {
         try {
-          const [usersRes, profilesRes, ladyProfilesRes] = await Promise.all([
+          const [usersRes, ladyProfilesRes] = await Promise.all([
             api.get('/auth/users'),
-            api.get('/profiles'),
-            api.get('/lady-profiles/ladies')
+            api.get('/lady-profiles')
           ]);
           setUsers(usersRes.data);
-          setProfiles(profilesRes.data);
           setLadyProfiles(ladyProfilesRes.data);
         } catch (err) {
-          setError('Failed to load data.');
+          setError('Failed to load data: ' + err.message);
         }
       };
       fetchData();
@@ -44,64 +41,64 @@ function Admin() {
 
   const handleAdminLogin = async (e) => {
     e.preventDefault();
-    setError('');
     try {
       await adminLogin(adminEmail, adminPassword);
     } catch (err) {
-      setError('Invalid admin credentials.');
-    }
-  };
-
-  const handleDelete = async (id, type) => {
-    if (!window.confirm('Delete?')) return;
-    try {
-      await api.delete(type === 'user' ? `/auth/users/${id}` : type === 'profile' ? `/profiles/${id}` : `/lady-profiles/${id}`);
-      if (type === 'user') setUsers(users.filter(u => u._id !== id));
-      if (type === 'profile') setProfiles(profiles.filter(p => p._id !== id));
-      if (type === 'lady-profile') setLadyProfiles(ladyProfiles.filter(p => p._id !== id));
-    } catch (err) {
-      setError('Delete failed.');
+      setError('Invalid admin credentials: ' + err.message);
     }
   };
 
   const handleAddLadyProfile = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post('/lady-profiles', {
+      const profileData = {
         ...newLadyProfile,
-        images: newLadyProfile.images.split(',').map(img => img.trim()),
-        interests: newLadyProfile.interests.split(',').map(i => i.trim())
-      });
+        age: parseInt(newLadyProfile.age) || 0,
+        images: newLadyProfile.images ? newLadyProfile.images.split(',').map(img => img.trim()) : [],
+        interests: newLadyProfile.interests ? newLadyProfile.interests.split(',').map(i => i.trim()) : []
+      };
+      const res = await api.post('/lady-profiles', profileData);
       setLadyProfiles([...ladyProfiles, res.data]);
-      setNewLadyProfile({ name: '', age: '', location: '', bio: '', images: [], interests: [], userId: '' });
+      setNewLadyProfile({ name: '', age: '', location: '', bio: '', images: '', interests: '', userId: '' });
+      setError('');
     } catch (err) {
-      setError('Failed to add profile.');
+      console.error('Add profile error:', err.response?.data || err.message);
+      setError(`Failed to add profile: ${err.response?.data?.msg || err.message}`);
     }
   };
 
-  if (user?.role !== 'admin') {
+  const handleDelete = async (id, type) => {
+    if (!window.confirm(`Delete ${type}?`)) return;
+    try {
+      await api.delete(`/${type === 'user' ? 'auth/users' : 'lady-profiles'}/${id}`);
+      if (type === 'user') setUsers(users.filter(u => u._id !== id));
+      if (type === 'lady-profile') setLadyProfiles(ladyProfiles.filter(p => p._id !== id));
+    } catch (err) {
+      setError(`Failed to delete ${type}: ${err.message}`);
+    }
+  };
+
+  if (!user || user.role !== 'admin') {
     return (
       <div className="admin-container">
-        <h2>Admin Login 🔧</h2>
+        <h2>Admin Login 🔐</h2>
         {error && <p className="error">{error}</p>}
-        <form onSubmit={handleAdminLogin} className="admin-login-form">
+        <form onSubmit={handleAdminLogin} className="admin-form">
           <input
             type="email"
             value={adminEmail}
-            onChange={(e) => setAdminEmail(e.target.value)}
+            onChange={e => setAdminEmail(e.target.value)}
             placeholder="Admin Email"
             required
-            className="input-field"
           />
           <input
             type="password"
             value={adminPassword}
-            onChange={(e) => setAdminPassword(e.target.value)}
+            onChange={e => setAdminPassword(e.target.value)}
             placeholder="Admin Password"
             required
-            className="input-field"
           />
-          <button type="submit" className="submit-btn">Login as Admin</button>
+          <button type="submit" className="admin-btn">Login</button>
         </form>
         <button onClick={() => navigate('/')} className="back-btn">Back to Home 🏠</button>
       </div>
@@ -110,7 +107,7 @@ function Admin() {
 
   return (
     <div className="admin-container">
-      <h2>Admin Panel 🔧</h2>
+      <h2>Admin Panel ⚙️</h2>
       {error && <p className="error">{error}</p>}
       <section>
         <h3>Add Lady Profile 👩</h3>
@@ -118,86 +115,72 @@ function Admin() {
           <input
             type="text"
             value={newLadyProfile.name}
-            onChange={(e) => setNewLadyProfile({ ...newLadyProfile, name: e.target.value })}
+            onChange={e => setNewLadyProfile({ ...newLadyProfile, name: e.target.value })}
             placeholder="Name"
             required
-            className="input-field"
           />
           <input
             type="number"
             value={newLadyProfile.age}
-            onChange={(e) => setNewLadyProfile({ ...newLadyProfile, age: e.target.value })}
+            onChange={e => setNewLadyProfile({ ...newLadyProfile, age: e.target.value })}
             placeholder="Age"
             required
-            className="input-field"
           />
           <input
             type="text"
             value={newLadyProfile.location}
-            onChange={(e) => setNewLadyProfile({ ...newLadyProfile, location: e.target.value })}
+            onChange={e => setNewLadyProfile({ ...newLadyProfile, location: e.target.value })}
             placeholder="Location"
             required
-            className="input-field"
           />
           <textarea
             value={newLadyProfile.bio}
-            onChange={(e) => setNewLadyProfile({ ...newLadyProfile, bio: e.target.value })}
+            onChange={e => setNewLadyProfile({ ...newLadyProfile, bio: e.target.value })}
             placeholder="Bio"
             required
-            className="input-field"
           />
           <input
             type="text"
             value={newLadyProfile.images}
-            onChange={(e) => setNewLadyProfile({ ...newLadyProfile, images: e.target.value })}
+            onChange={e => setNewLadyProfile({ ...newLadyProfile, images: e.target.value })}
             placeholder="Image URLs (comma-separated)"
-            className="input-field"
           />
           <input
             type="text"
             value={newLadyProfile.interests}
-            onChange={(e) => setNewLadyProfile({ ...newLadyProfile, interests: e.target.value })}
+            onChange={e => setNewLadyProfile({ ...newLadyProfile, interests: e.target.value })}
             placeholder="Interests (comma-separated)"
-            className="input-field"
           />
           <input
             type="text"
             value={newLadyProfile.userId}
-            onChange={(e) => setNewLadyProfile({ ...newLadyProfile, userId: e.target.value })}
+            onChange={e => setNewLadyProfile({ ...newLadyProfile, userId: e.target.value })}
             placeholder="Smartsupp User ID (e.g., lady1)"
             required
-            className="input-field"
           />
-          <button type="submit" className="submit-btn">Add Profile</button>
+          <button type="submit" className="admin-btn">Add Lady Profile</button>
         </form>
       </section>
       <section>
         <h3>Users 👥</h3>
         <table className="admin-table">
-          <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
           <tbody>
             {users.map(u => (
               <tr key={u._id}>
                 <td>{u.username}</td>
                 <td>{u.email}</td>
                 <td>{u.role}</td>
-                <td><button onClick={() => handleDelete(u._id, 'user')} className="delete-btn">Delete</button></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
-      <section>
-        <h3>User Profiles 📄</h3>
-        <table className="admin-table">
-          <thead><tr><th>Name</th><th>Age</th><th>Location</th><th>Actions</th></tr></thead>
-          <tbody>
-            {profiles.map(p => (
-              <tr key={p._id}>
-                <td>{p.name}</td>
-                <td>{p.age}</td>
-                <td>{p.location}</td>
-                <td><button onClick={() => handleDelete(p._id, 'profile')} className="delete-btn">Delete</button></td>
+                <td>
+                  <button onClick={() => handleDelete(u._id, 'user')} className="delete-btn">Delete</button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -206,7 +189,15 @@ function Admin() {
       <section>
         <h3>Lady Profiles 👩</h3>
         <table className="admin-table">
-          <thead><tr><th>Name</th><th>Age</th><th>Location</th><th>User ID</th><th>Actions</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Location</th>
+              <th>User ID</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
           <tbody>
             {ladyProfiles.map(p => (
               <tr key={p._id}>
@@ -214,13 +205,15 @@ function Admin() {
                 <td>{p.age}</td>
                 <td>{p.location}</td>
                 <td>{p.userId}</td>
-                <td><button onClick={() => handleDelete(p._id, 'lady-profile')} className="delete-btn">Delete</button></td>
+                <td>
+                  <button onClick={() => handleDelete(p._id, 'lady-profile')} className="delete-btn">Delete</button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </section>
-      <button onClick={() => navigate('/dashboard')} className="back-btn">Back to Dashboard 👩</button>
+      <button onClick={() => navigate('/')} className="back-btn">Back to Home 🏠</button>
     </div>
   );
 }
