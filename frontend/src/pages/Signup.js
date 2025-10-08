@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Signup.css';
 
 function Signup() {
@@ -13,27 +13,25 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     try {
       await signup(username, email, password);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
-      setError('Signup failed. User may already exist.');
+      setError('Failed to sign up');
     }
   };
 
   return (
     <div className="signup-container">
+      <h2>Sign Up ✍️</h2>
+      {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit} className="signup-form">
-        <h2>Join FunFling</h2>
-        {error && <p className="error">{error}</p>}
         <input
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Username"
           required
-          className="input-field"
         />
         <input
           type="email"
@@ -41,7 +39,6 @@ function Signup() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
           required
-          className="input-field"
         />
         <input
           type="password"
@@ -49,13 +46,12 @@ function Signup() {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           required
-          className="input-field"
         />
-        <button type="submit" className="submit-btn">Sign Up</button>
-        <p className="login-link">
-          Already a member? <Link to="/login">Login</Link>
-        </p>
+        <button type="submit" className="signup-btn">Sign Up</button>
       </form>
+      <p>
+        Already have an account? <Link to="/login">Login 🔑</Link>
+      </p>
     </div>
   );
 }

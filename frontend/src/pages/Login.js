@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Login.css';
 
 function Login() {
@@ -12,27 +12,25 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     try {
       await login(email, password);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
-      setError('Invalid credentials. Try again.');
+      setError('Invalid credentials');
     }
   };
 
   return (
     <div className="login-container">
+      <h2>Login 🔑</h2>
+      {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit} className="login-form">
-        <h2>FunFling Login</h2>
-        {error && <p className="error">{error}</p>}
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
           required
-          className="input-field"
         />
         <input
           type="password"
@@ -40,13 +38,12 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           required
-          className="input-field"
         />
-        <button type="submit" className="submit-btn">Login</button>
-        <p className="signup-link">
-          New here? <Link to="/signup">Sign up</Link>
-        </p>
+        <button type="submit" className="login-btn">Login</button>
       </form>
+      <p>
+        Don't have an account? <Link to="/signup">Sign up ✍️</Link>
+      </p>
     </div>
   );
 }
