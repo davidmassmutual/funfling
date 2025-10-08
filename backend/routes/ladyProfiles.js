@@ -7,6 +7,7 @@ const { auth, adminAuth } = require('../middleware/auth');
 router.get('/', async (req, res) => {
   try {
     const profiles = await LadyProfile.find();
+    console.log('Returning profiles:', profiles); // Debug log
     res.json(profiles);
   } catch (err) {
     console.error('Get lady profiles error:', err);
