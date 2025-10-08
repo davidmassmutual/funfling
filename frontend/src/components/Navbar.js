@@ -8,26 +8,24 @@ function Navbar() {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
     setIsMobileMenuOpen(false);
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
     <nav className="navbar">
       <Link to="/" className="nav-brand">💖 FunFling</Link>
-      <div className="hamburger" onClick={toggleMobileMenu}>
+      <button className="hamburger" onClick={toggleMobileMenu}>
         {isMobileMenuOpen ? '✖' : '☰'}
-      </div>
-      <ul className={`nav-links ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+      </button>
+      <ul className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}>
         <li>
-          <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
-            🏠 Home
+          <Link to={user ? '/dashboard' : '/'} onClick={() => setIsMobileMenuOpen(false)}>
+            🏠 {user ? 'Dashboard' : 'Home'}
           </Link>
         </li>
         <li>
@@ -43,13 +41,8 @@ function Navbar() {
         {user ? (
           <>
             <li>
-              <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
-                👩 Dashboard
-              </Link>
-            </li>
-            <li>
               <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                🧑 Profile
+                😊 Profile
               </Link>
             </li>
             <li>
@@ -65,7 +58,7 @@ function Navbar() {
             {user.role === 'admin' && (
               <li>
                 <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)}>
-                  🔧 Admin
+                  ⚙️ Admin
                 </Link>
               </li>
             )}
@@ -79,7 +72,7 @@ function Navbar() {
           <>
             <li>
               <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                🔐 Login
+                🔑 Login
               </Link>
             </li>
             <li>
